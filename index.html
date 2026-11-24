@@ -363,15 +363,6 @@ function deleteNote(id) {
     }
 }
 
-  exports.makeUppercase = functions.firestore.document('/messages/{documentId}')
-      .onCreate((snap, context) => {
-        const original = snap.data().original;
-        console.log('Uppercasing', context.params.documentId, original);
-        const uppercase = original.toUpperCase();
-        return snap.ref.set({uppercase}, {merge: true});
-      });
-  // 10.0.2.2 is the special IP address to connect to the 'localhost' of
-// the host computer from an Android emulator.
 
 </script>
 
