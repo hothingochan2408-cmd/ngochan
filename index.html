@@ -362,7 +362,6 @@ function deleteNote(id) {
 
     }
 }
-  const functions = require('firebase-functions/v1');
 
   exports.makeUppercase = functions.firestore.document('/messages/{documentId}')
       .onCreate((snap, context) => {
@@ -373,12 +372,6 @@ function deleteNote(id) {
       });
   // 10.0.2.2 is the special IP address to connect to the 'localhost' of
 // the host computer from an Android emulator.
-val firestore = Firebase.firestore
-firestore.useEmulator("10.0.2.2", 8080)
-
-firestore.firestoreSettings = firestoreSettings {
-    isPersistenceEnabled = false
-}
 
 </script>
 
