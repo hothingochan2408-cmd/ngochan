@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NGỌC HÂN 🐷</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff0f5;
+    color: #98566e;
+}
+
+header {
+    background: #ffbad0;
+    text-align: center;
+    padding: 30px 15px;
+}
+
+header h1 {
+    color: white;
+    font-size: 38px;
+    letter-spacing: 5px;
+    margin: 5px;
+}
+
+header p {
+    color: white;
+}
+
+.hero {
+    text-align: center;
+    padding: 30px 15px;
+    background: #ffe1eb;
+}
+
+.pig {
+    font-size: 100px;
+}
+
+.hero h2 {
+    color: #e47d9e;
+}
+
+.container {
+    max-width: 950px;
+    margin: auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 22px;
+    margin: 20px 0;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px #f5c6d7;
+}
+
+h2, h3 {
+    color: #e47d9e;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    border: 2px solid #ffd1df;
+    border-radius: 12px;
+    outline: none;
+    font-family: Arial;
+}
+
+textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+button {
+    border: none;
+    background: #f49bb7;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:hover {
+    background: #df7899;
+}
+
+.note {
+    background: #fff3f7;
+    border: 1px solid #ffd4e2;
+    padding: 18px;
+    border-radius: 15px;
+    margin: 15px 0;
+    overflow-wrap: anywhere;
+}
+
+.note-content {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.note small {
+    color: #b68b9c;
+}
+
+.actions {
+    text-align: right;
+}
+
+.delete {
+    background: #e98c9c;
+}
+
+#status {
+    text-align: center;
+    color: #df7899;
+    font-size: 14px;
+}
+
+footer {
+    background: #ffbad0;
+    text-align: center;
+    color: white;
+    padding: 25px;
+    margin-top: 40px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>NGỌC HÂN ♡</h1>
+    <p>Welcome to my little pink world</p>
+</header>
+
+<section class="hero">
+    <div class="pig">🐷</div>
+    <h2>Góc nhỏ của Ngọc Hân</h2>
+    <p>Nơi mọi người cùng chia sẻ những điều thú vị 💗</p>
+</section>
+
+<div class="container">
+
+    <div class="box">
+        <h2>🎀 Viết ghi chú mới</h2>
+
+        <input
+            type="text"
+            id="author"
+            placeholder="Tên người đăng..."
+        >
+
+        <input
+            type="text"
+            id="title"
+            placeholder="Tiêu đề ghi chú..."
+        >
+
+        <textarea
+            id="content"
+            placeholder="Bạn muốn chia sẻ điều gì?"
+        ></textarea>
+
+        <button onclick="addNote()">
+            + Đăng ghi chú
+        </button>
+    </div>
+
+    <h2 style="text-align:center">
+        🌷 BẢNG GHI CHÚ CHUNG 🌷
+    </h2>
+
+    <p id="status">Đang kết nối dữ liệu...</p>
+
+    <div id="notes">
+        </div>
+
+</div>
+
+<footer>
+    <p>Made with love ♡ NGỌC HÂN 🐷</p>
+    <p>Everyone is welcome!</p>
+</footer>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+
+// THAY THÔNG TIN FIREBASE CỦA BẠN VÀO ĐÂY
+
+const firebaseConfig = {
+    apiKey: "THONG_TIN_THAT_CUA_BAN",
+    authDomain: "ngoc-han.firebaseapp.com",
+    databaseURL: "THONG_TIN_THAT_CUA_BAN",
+    projectId: "ngoc-han",
+    storageBucket: "THONG_TIN_THAT_CUA_BAN",
+    messagingSenderId: "THONG_TIN_THAT_CUA_BAN",
+    appId: "THONG_TIN_THAT_CUA_BAN"
+};
+
+// KẾT NỐI FIREBASE
+
+firebase.initializeApp(firebaseConfig);
+
+const database = firebase.database();
+
+const notesRef = database.ref("notes");
+
+
+// THÊM GHI CHÚ
+
+function addNote() {
+
+    const author = document.getElementById("author").value.trim();
+    const title = document.getElementById("title").value.trim();
+    const content = document.getElementById("content").value.trim();
+
+    if (!author || !title || !content) {
+        alert("Vui lòng nhập đầy đủ thông tin nhé!");
+        return;
+    }
+
+    notesRef.push({
+        author: author,
+        title: title,
+        content: content,
+        time: Date.now()
+    })
+    .then(() => {
+        document.getElementById("title").value = "";
+        document.getElementById("content").value = "";
+
+        alert("Đăng ghi chú thành công! 💗");
+    })
+    .catch(error => {
+        alert("Không thể đăng: " + error.message);
+    });
+}
+
+
+// HIỂN THỊ VÀ CẬP NHẬT GHI CHÚ TRỰC TIẾP
+
+notesRef.on("value", snapshot => {
+
+    const notes = document.getElementById("notes");
+
+    notes.innerHTML = "";
+
+    document.getElementById("status").innerText =
+        "💗 Đã kết nối - Nội dung được đồng bộ trực tuyến";
+
+    if (!snapshot.exists()) {
+        notes.innerHTML =
+            "<p style='text-align:center'>Chưa có ghi chú nào. Hãy là người đầu tiên đăng bài nhé! 🐷</p>";
+        return;
+    }
+
+    const data = snapshot.val();
+
+    Object.entries(data)
+        .sort((a, b) => b[1].time - a[1].time)
+        .forEach(([id, item]) => {
+
+            const div = document.createElement("div");
+
+            div.className = "note";
+
+            const title = document.createElement("h3");
+            title.textContent = "💌 " + item.title;
+
+            const author = document.createElement("small");
+            author.textContent =
+                "Người đăng: " + item.author +
+                " | " + new Date(item.time).toLocaleString("vi-VN");
+
+            const content = document.createElement("p");
+            content.className = "note-content";
+            content.textContent = item.content;
+
+            const actions = document.createElement("div");
+            actions.className = "actions";
+
+            const edit = document.createElement("button");
+            edit.textContent = "✏️ Chỉnh sửa";
+
+            edit.onclick = () => editNote(id, item);
+
+            const remove = document.createElement("button");
+            remove.textContent = "🗑️ Xóa";
+            remove.className = "delete";
+
+            remove.onclick = () => deleteNote(id);
+
+            actions.appendChild(edit);
+            actions.appendChild(remove);
+
+            div.appendChild(title);
+            div.appendChild(author);
+            div.appendChild(content);
+            div.appendChild(actions);
+
+            notes.appendChild(div);
+        });
+
+}, error => {
+
+    document.getElementById("status").innerText =
+        "Lỗi kết nối: " + error.message;
+
+});
+
+
+// CHỈNH SỬA GHI CHÚ
+
+function editNote(id, item) {
+
+    const newTitle = prompt("Chỉnh sửa tiêu đề:", item.title);
+
+    if (newTitle === null) return;
+
+    const newContent = prompt("Chỉnh sửa nội dung:", item.content);
+
+    if (newContent === null) return;
+
+    if (!newTitle.trim() || !newContent.trim()) {
+        alert("Nội dung không được để trống!");
+        return;
+    }
+
+    notesRef.child(id).update({
+        title: newTitle.trim(),
+        content: newContent.trim()
+    });
+}
+
+
+// XÓA GHI CHÚ
+
+function deleteNote(id) {
+
+    if (confirm("Bạn có chắc muốn xóa ghi chú này không?")) {
+
+        notesRef.child(id).remove();
+
+    }
+}
+  const functions = require('firebase-functions/v1');
+
+  exports.makeUppercase = functions.firestore.document('/messages/{documentId}')
+      .onCreate((snap, context) => {
+        const original = snap.data().original;
+        console.log('Uppercasing', context.params.documentId, original);
+        const uppercase = original.toUpperCase();
+        return snap.ref.set({uppercase}, {merge: true});
+      });
+  // 10.0.2.2 is the special IP address to connect to the 'localhost' of
+// the host computer from an Android emulator.
+val firestore = Firebase.firestore
+firestore.useEmulator("10.0.2.2", 8080)
+
+firestore.firestoreSettings = firestoreSettings {
+    isPersistenceEnabled = false
+}
+
+</script>
+
+</body>
+</html>
